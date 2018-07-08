@@ -25,14 +25,18 @@ final class Importer
         $this->reader = $reader;
     }
 
-    public function load($file): void
+    public function load(string $filename): self
     {
-        $this->reader->load($file);
+        $this->reader->load($filename);
+
+        return $this;
     }
 
-    public function useImportClass(Import $importClass): void
+    public function useImportClass(Import $importClass): self
     {
         $this->importClass = $importClass;
+
+        return $this;
     }
 
     public function import(): void
@@ -60,8 +64,8 @@ final class Importer
 
         $i = 0;
 
-        foreach ($items as $item) {
-            $mappedItems[] = $this->importClass->map($item);
+        for (; $items->valid(); $items->next()) {
+            $mappedItems[] = $this->importClass->map($a = $items->current());
 
             if (++$i === $chunkSize) {
                 $this->importClass->save($mappedItems);
@@ -77,8 +81,8 @@ final class Importer
     {
         $mappedItems = [];
 
-        foreach ($items as $item) {
-            $mappedItems[] = $this->importClass->map($item);
+        for (; $items->valid(); $items->next()) {
+            $mappedItems[] = $this->importClass->map($items->current());
         }
 
         $this->importClass->save($mappedItems);
