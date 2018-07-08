@@ -1,6 +1,6 @@
 <?php
 
-namespace KunicMarko\FormAnnotationBundle;
+namespace KunicMarko\Importer\Bridge\Symfony;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

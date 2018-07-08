@@ -25,6 +25,8 @@ class ImportClass extends TestCase implements Import, BeforeImport
     public function save(array $items): void
     {
         $this->assertCount(999, $items);
-        $this->assertSame(2, (int) reset($items)[0]);
+
+        $first = reset($items);
+        $this->assertSame(2, (int) reset($first));
     }
 }

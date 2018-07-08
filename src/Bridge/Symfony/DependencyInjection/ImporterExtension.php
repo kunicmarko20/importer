@@ -1,6 +1,6 @@
 <?php
 
-namespace KunicMarko\FormAnnotationBundle\DependencyInjection;
+namespace KunicMarko\Importer\Bridge\Symfony\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

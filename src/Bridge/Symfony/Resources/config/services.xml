@@ -7,8 +7,16 @@
             <call method="addReader">
                 <argument type="service" id="importer.reader.csv" />
             </call>
+            <call method="addReader">
+                <argument type="service" id="importer.reader.json" />
+            </call>
+            <call method="addReader">
+                <argument type="service" id="importer.reader.xlsx" />
+            </call>
         </service>
 
         <service id="importer.reader.csv" class="KunicMarko\Importer\Reader\CsvReader" />
+        <service id="importer.reader.json" class="KunicMarko\Importer\Reader\JsonReader" />
+        <service id="importer.reader.xlsx" class="KunicMarko\Importer\Reader\XlsxReader" />
     </services>
 </container>
