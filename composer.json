@@ -1,0 +1,42 @@
+{
+    "name": "kunicmarko/importer",
+    "type": "library",
+    "description": "Importer that can handle different file types.",
+    "keywords": [
+        "importer",
+        "excel",
+        "csv",
+        "json",
+        "symfony",
+        "laravel",
+        "lumen"
+    ],
+    "homepage": "https://github.com/kunicmarko20/importer",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marko Kunic",
+            "email": "kunicmarko20@gmail.com",
+            "homepage": "https://twitter.com/kunicmarko20"
+        }
+    ],
+    "require": {
+        "php": "^7.1"
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^4.0"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "KunicMarko\\Importer\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "KunicMarko\\Importer\\Tests\\": "tests/"
+        }
+    }
+}
