@@ -4,25 +4,25 @@ namespace KunicMarko\Importer\Tests\Fixtures;
 
 use KunicMarko\Importer\ChunkImport;
 use KunicMarko\Importer\Import;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Marko Kunic <kunicmarko20@gmail.com>
  */
-class ChunkImportClass implements Import, ChunkImport
+class ChunkImportClass extends TestCase implements Import, ChunkImport
 {
     public function chunkSize(): int
     {
-        // TODO: Implement chunkSize() method.
+        return 50;
     }
 
     public function map(array $item)
     {
-        // TODO: Implement map() method.
+        return $item;
     }
 
     public function save(array $items): void
     {
-        // TODO: Implement save() method.
+        $this->assertCount(50, $items);
     }
-
 }

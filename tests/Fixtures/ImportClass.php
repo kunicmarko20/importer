@@ -12,9 +12,11 @@ use PHPUnit\Framework\TestCase;
  */
 class ImportClass extends TestCase implements Import, BeforeImport
 {
-    public function before(Iterator $items): void
+    public function before(Iterator $items): Iterator
     {
         $items->next();
+
+        return $items;
     }
 
     public function map(array $item)

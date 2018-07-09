@@ -10,6 +10,7 @@ use Iterator;
 interface Reader
 {
     public function getFormat(): string;
-    public function load(string $filename): void;
+    public function fromFile(string $filename): void;
+    public function fromString(string $content): void;
     public function getItems(): Iterator;
 }

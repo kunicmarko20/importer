@@ -2,6 +2,8 @@
 
 namespace KunicMarko\Importer\Reader;
 
+use KunicMarko\Importer\Exception\InvalidArgumentException;
+use KunicMarko\Importer\Exception\NotSupportedException;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Iterator;
 use ArrayIterator;
@@ -9,13 +11,8 @@ use ArrayIterator;
 /**
  * @author Marko Kunic <kunicmarko20@gmail.com>
  */
-final class XlsxReader implements Reader
+final class XlsxReader extends AbstractReader
 {
-    /**
-     * @var string
-     */
-    private $filename;
-
     /**
      * @var Xlsx
      */
@@ -31,19 +28,15 @@ final class XlsxReader implements Reader
         return 'xlsx';
     }
 
-    public function load(string $filename): void
+    public function fromString(string $content): void
     {
-        if (!file_exists($filename)) {
-            throw new \InvalidArgumentException('File not found.');
-        }
-
-        $this->filename = $filename;
+        throw new NotSupportedException('Import from string is not supported for xslx.');
     }
 
     public function getItems(): Iterator
     {
         if (!$this->filename) {
-            throw new \InvalidArgumentException('Please provide a path to file.');
+            throw new InvalidArgumentException('Please provide a path to file.');
         }
 
         $spreadsheet = $this->xlsxReader->load($this->filename);

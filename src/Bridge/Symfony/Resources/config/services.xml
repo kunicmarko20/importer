@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="importer.factory"
-                 class="KunicMarko\Importer\ImporterFactory"
-        >
+        <service id="KunicMarko\Importer\ImporterFactory">
             <call method="addReader">
-                <argument type="service" id="importer.reader.csv" />
+                <argument type="service" id="KunicMarko\Importer\Reader\CsvReader" />
             </call>
             <call method="addReader">
-                <argument type="service" id="importer.reader.json" />
-            </call>
-            <call method="addReader">
-                <argument type="service" id="importer.reader.xlsx" />
+                <argument type="service" id="KunicMarko\Importer\Reader\JsonReader" />
             </call>
         </service>
 
-        <service id="importer.reader.csv" class="KunicMarko\Importer\Reader\CsvReader" />
-        <service id="importer.reader.json" class="KunicMarko\Importer\Reader\JsonReader" />
-        <service id="importer.reader.xlsx" class="KunicMarko\Importer\Reader\XlsxReader" />
+        <service id="KunicMarko\Importer\Reader\CsvReader" />
+        <service id="KunicMarko\Importer\Reader\JsonReader" />
     </services>
 </container>

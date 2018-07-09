@@ -25,9 +25,16 @@ final class Importer
         $this->reader = $reader;
     }
 
-    public function load(string $filename): self
+    public function fromFile(string $filename): self
     {
-        $this->reader->load($filename);
+        $this->reader->fromFile($filename);
+
+        return $this;
+    }
+
+    public function fromString(string $content): self
+    {
+        $this->reader->fromString($content);
 
         return $this;
     }
@@ -44,7 +51,7 @@ final class Importer
         $items = $this->reader->getItems();
 
         if ($this->importClass instanceof BeforeImport) {
-            $this->importClass->before($items);
+            $items = $this->importClass->before($items);
         }
 
         if ($this->importClass instanceof ChunkImport) {
@@ -74,7 +81,9 @@ final class Importer
             }
         }
 
-        $this->importClass->save($mappedItems);
+        if ($mappedItems) {
+            $this->importClass->save($mappedItems);
+        }
     }
 
     private function importItems(Iterator $items): void
