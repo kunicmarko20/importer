@@ -37,7 +37,4 @@ abstract class AbstractReader implements Reader
 
         $this->content = $content;
     }
-
-    abstract public function getItems(): Iterator;
-    abstract public function getFormat(): string;
 }
