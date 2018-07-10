@@ -2,8 +2,8 @@
 
 namespace KunicMarko\Importer;
 
+use KunicMarko\Importer\Exception\InvalidArgumentException;
 use KunicMarko\Importer\Reader\Reader;
-use RuntimeException;
 
 /**
  * @author Marko Kunic <kunicmarko20@gmail.com>
@@ -11,25 +11,25 @@ use RuntimeException;
 final class ImporterFactory
 {
     /**
-     * @var Reader[]
+     * @var Importer[]
      */
-    private $readers;
+    private $importers;
 
     public function getImporter(string $format): Importer
     {
-        if (!array_key_exists($format, $this->readers)) {
-            throw new RuntimeException(sprintf(
+        if (!array_key_exists($format, $this->importers)) {
+            throw new InvalidArgumentException(sprintf(
                 'Invalid "%s" format, supported formats are : "%s"',
                 $format,
-                implode(', ', array_keys($this->readers))
+                implode(', ', array_keys($this->importers))
             ));
         }
 
-        return new Importer($this->readers[$format]);
+        return $this->importers[$format];
     }
 
     public function addReader(Reader $reader): void
     {
-        $this->readers[$reader->getFormat()] = $reader;
+        $this->importers[$reader->getFormat()] = new Importer($reader);
     }
 }

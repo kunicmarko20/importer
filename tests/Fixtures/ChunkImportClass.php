@@ -2,15 +2,25 @@
 
 namespace KunicMarko\Importer\Tests\Fixtures;
 
+use Iterator;
+use KunicMarko\Importer\BeforeImport;
 use KunicMarko\Importer\ChunkImport;
 use KunicMarko\Importer\Import;
 use PHPUnit\Framework\TestCase;
+use function count;
 
 /**
  * @author Marko Kunic <kunicmarko20@gmail.com>
  */
-class ChunkImportClass extends TestCase implements Import, ChunkImport
+class ChunkImportClass extends TestCase implements Import, ChunkImport, BeforeImport
 {
+    public function before(Iterator $items): Iterator
+    {
+        $items->next();
+
+        return $items;
+    }
+
     public function chunkSize(): int
     {
         return 50;
@@ -23,6 +33,6 @@ class ChunkImportClass extends TestCase implements Import, ChunkImport
 
     public function save(array $items): void
     {
-        $this->assertCount(50, $items);
+        $this->assertLessThanOrEqual(50, count($items));
     }
 }

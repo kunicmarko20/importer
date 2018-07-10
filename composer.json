@@ -7,6 +7,7 @@
         "excel",
         "csv",
         "json",
+        "xml",
         "symfony",
         "laravel",
         "lumen"
@@ -24,15 +25,23 @@
         "php": "^7.1"
     },
     "require-dev": {
+        "illuminate/support": "^5.6",
         "matthiasnoback/symfony-dependency-injection-test": "^3.0",
+        "orchestra/testbench": "~3.0",
         "phpoffice/phpspreadsheet": "^1.3",
         "symfony/config": "^3.4 || ^4.0",
         "symfony/dependency-injection": "^3.4 || ^4.0",
-        "symfony/http-kernel": "^3.4 || ^4.0",
-        "symfony/phpunit-bridge": "^4.0"
+        "symfony/http-kernel": "^3.4 || ^4.0"
     },
     "config": {
         "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "KunicMarko\\Importer\\Bridge\\Laravel\\ImporterServiceProvider"
+            ]
+        }
     },
     "autoload": {
         "psr-4": {

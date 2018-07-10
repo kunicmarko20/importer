@@ -7,6 +7,6 @@ use RuntimeException;
 /**
  * @author Marko Kunic <kunicmarko20@gmail.com>
  */
-class NotSupportedException extends RuntimeException implements ImportException
+final class NotSupportedException extends RuntimeException implements ImporterException
 {
 }
