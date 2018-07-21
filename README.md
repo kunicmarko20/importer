@@ -258,7 +258,7 @@ class UserImport
 
         $importer->fromString('some,csv,string')
             ->useIamportClass(new YourImportClass())
-            ->withAdditionalData(['something' => $this->getSomething()])
+            ->withAdditionalData(['user' => 'kunicmarko20'])
             ->import();
     }
 }
