@@ -14,7 +14,7 @@ use function count;
  */
 class ChunkImportClass extends TestCase implements Import, ChunkImport, BeforeImport
 {
-    public function before(Iterator $items): Iterator
+    public function before(Iterator $items, array $additionalData): Iterator
     {
         $items->next();
 
@@ -26,12 +26,12 @@ class ChunkImportClass extends TestCase implements Import, ChunkImport, BeforeIm
         return 50;
     }
 
-    public function map(array $item)
+    public function map(array $item, array $additionalData)
     {
         return $item;
     }
 
-    public function save(array $items): void
+    public function save(array $items, array $additionalData): void
     {
         $this->assertLessThanOrEqual(50, count($items));
     }

@@ -20,6 +20,11 @@ final class Importer
      */
     private $importClass;
 
+    /**
+     * @var array
+     */
+    private $additionalData = [];
+
     public function __construct(Reader $reader)
     {
         $this->reader = $reader;
@@ -39,6 +44,13 @@ final class Importer
         return $this;
     }
 
+    public function withAdditionalData(array $additionalData): self
+    {
+        $this->additionalData = $additionalData;
+
+        return $this;
+    }
+
     public function useImportClass(Import $importClass): self
     {
         $this->importClass = $importClass;
@@ -51,7 +63,7 @@ final class Importer
         $items = $this->reader->getItems();
 
         if ($this->importClass instanceof BeforeImport) {
-            $items = $this->importClass->before($items);
+            $items = $this->importClass->before($items, $this->additionalData);
         }
 
         if ($this->importClass instanceof ChunkImport) {
@@ -72,17 +84,17 @@ final class Importer
         $i = 0;
 
         for (; $items->valid(); $items->next()) {
-            $mappedItems[] = $this->importClass->map($a = $items->current());
+            $mappedItems[] = $this->importClass->map($items->current(), $this->additionalData);
 
             if (++$i === $chunkSize) {
-                $this->importClass->save($mappedItems);
+                $this->importClass->save($mappedItems, $this->additionalData);
                 $mappedItems = [];
                 $i = 0;
             }
         }
 
         if ($mappedItems) {
-            $this->importClass->save($mappedItems);
+            $this->importClass->save($mappedItems, $this->additionalData);
         }
     }
 
@@ -91,9 +103,9 @@ final class Importer
         $mappedItems = [];
 
         for (; $items->valid(); $items->next()) {
-            $mappedItems[] = $this->importClass->map($items->current());
+            $mappedItems[] = $this->importClass->map($items->current(), $this->additionalData);
         }
 
-        $this->importClass->save($mappedItems);
+        $this->importClass->save($mappedItems, $this->additionalData);
     }
 }

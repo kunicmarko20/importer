@@ -7,6 +7,6 @@ namespace KunicMarko\Importer;
  */
 interface Import
 {
-    public function map(array $item);
-    public function save(array $items): void;
+    public function map(array $item, array $additionalData);
+    public function save(array $items, array $additionalData): void;
 }

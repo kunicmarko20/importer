@@ -120,6 +120,16 @@ class ImporterTest extends TestCase
             ->import();
     }
 
+    public function testWithAdditionalData(): void
+    {
+        $importer = $this->importerFactory->getImporter('xlsx');
+
+        $importer->fromFile(__DIR__ . '/Fixtures/fake.xlsx')
+            ->useImportClass($this->importClass)
+            ->withAdditionalData(['test' => 'testing'])
+            ->import();
+    }
+
     /**
      * @expectedException \KunicMarko\Importer\Exception\NotSupportedException
      */

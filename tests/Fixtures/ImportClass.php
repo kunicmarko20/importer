@@ -12,19 +12,23 @@ use PHPUnit\Framework\TestCase;
  */
 class ImportClass extends TestCase implements Import, BeforeImport
 {
-    public function before(Iterator $items): Iterator
+    public function before(Iterator $items, array $additionalData): Iterator
     {
         $items->next();
 
         return $items;
     }
 
-    public function map(array $item)
+    public function map(array $item, array $additionalData)
     {
+        if ($additionalData) {
+            $this->assertSame('testing', reset($additionalData));
+        }
+
         return $item;
     }
 
-    public function save(array $items): void
+    public function save(array $items, array $additionalData): void
     {
         $this->assertCount(999, $items);
 

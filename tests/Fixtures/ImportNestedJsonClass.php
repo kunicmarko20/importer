@@ -12,9 +12,8 @@ class ImportNestedJsonClass extends ImportClass
 {
     /**
      * @param ArrayIterator|Iterator $items
-     * @return Iterator
      */
-    public function before(Iterator $items): Iterator
+    public function before(Iterator $items, array $additionalData): Iterator
     {
         $iterator = new ArrayIterator($items->getArrayCopy()['data']);
 
