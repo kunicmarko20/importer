@@ -27,6 +27,7 @@ Documentation
     * [Import](#import)
         * [Import From File](#import-from-file)
         * [Import From String](#import-from-string)
+    * [Pass Additional Data](#pass-additional-data)
 * [Extending](#extending)
 
 ## Installation
@@ -113,7 +114,7 @@ use KunicMarko\Importer\Import;
 
 class ImportClass implements Import
 {
-    public function map(array $item)
+    public function map(array $item, array $additionalData)
     {
         $user = new User();
         
@@ -123,7 +124,7 @@ class ImportClass implements Import
         return $user;
     }
 
-    public function save(array $items): void
+    public function save(array $items, array $additionalData): void
     {
         //save your users
     }
@@ -143,7 +144,7 @@ use Iterator;
 
 class ImportClass implements Import, BeforeImport
 {
-    public function before(Iterator $items): Iterator
+    public function before(Iterator $items, array $additionalData): Iterator
     {
         //start from 2nd line
         $items->next();
@@ -171,7 +172,7 @@ class ImportClass implements Import, ChunkImport
         return 50;
     }
 
-    public function save(array $items): void
+    public function save(array $items, array $additionalData): void
     {
         //save will be called multiple times with 50 or less items
     }
@@ -234,6 +235,34 @@ class UserImport
 ```
 
 > Excel import does not support import from a string.
+
+### Pass Additional Data
+
+Sometimes you may want to pass additional data to your import class.
+
+```php
+use KunicMarko\Importer\ImporterFactory;
+
+class UserImport
+{
+    private $importerFactory;
+
+    public function __construct(ImporterFactory $importerFactory)
+    {
+        $this->importerFactory = $importerFactory;
+    }
+    
+    public function import()
+    {
+        $importer = $importerFactory->getImporter('csv');
+
+        $importer->fromString('some,csv,string')
+            ->useIamportClass(new YourImportClass())
+            ->withAdditionalData(['something' => $this->getSomething()])
+            ->import();
+    }
+}
+```
 
 ## Extending
 

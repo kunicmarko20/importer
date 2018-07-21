@@ -9,5 +9,5 @@ use Iterator;
  */
 interface BeforeImport
 {
-    public function before(Iterator $items): Iterator;
+    public function before(Iterator $items, array $additionalData): Iterator;
 }
