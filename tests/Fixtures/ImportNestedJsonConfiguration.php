@@ -8,7 +8,7 @@ use ArrayIterator;
 /**
  * @author Marko Kunic <kunicmarko20@gmail.com>
  */
-class ImportNestedJsonClass extends ImportClass
+class ImportNestedJsonConfiguration extends ImportConfiguration
 {
     /**
      * @param ArrayIterator|Iterator $items

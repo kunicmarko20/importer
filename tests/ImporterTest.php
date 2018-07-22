@@ -2,15 +2,15 @@
 
 namespace KunicMarko\Importer\Tests;
 
-use KunicMarko\Importer\Import;
+use KunicMarko\Importer\ImportConfiguration as ImportConfigurationInterface;
 use KunicMarko\Importer\ImporterFactory;
 use KunicMarko\Importer\Reader\CsvReader;
 use KunicMarko\Importer\Reader\XlsxReader;
 use KunicMarko\Importer\Reader\JsonReader;
 use KunicMarko\Importer\Reader\XmlReader;
-use KunicMarko\Importer\Tests\Fixtures\ChunkImportClass;
-use KunicMarko\Importer\Tests\Fixtures\ImportClass;
-use KunicMarko\Importer\Tests\Fixtures\ImportNestedJsonClass;
+use KunicMarko\Importer\Tests\Fixtures\ChunkImportConfiguration;
+use KunicMarko\Importer\Tests\Fixtures\ImportConfiguration;
+use KunicMarko\Importer\Tests\Fixtures\ImportNestedJsonConfiguration;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,9 +24,9 @@ class ImporterTest extends TestCase
     private $importerFactory;
 
     /**
-     * @var Import
+     * @var ImportConfigurationInterface
      */
-    private $importClass;
+    private $importConfiguration;
 
     public function setUp()
     {
@@ -36,7 +36,7 @@ class ImporterTest extends TestCase
         $this->importerFactory->addReader(new XlsxReader());
         $this->importerFactory->addReader(new XmlReader());
 
-        $this->importClass = new ImportClass();
+        $this->importConfiguration = new ImportConfiguration();
     }
 
     public function testCsvImportFromFile(): void
@@ -44,7 +44,7 @@ class ImporterTest extends TestCase
         $importer = $this->importerFactory->getImporter('csv');
 
         $importer->fromFile(__DIR__ . '/Fixtures/fake.csv')
-            ->useImportClass($this->importClass)
+            ->useImportConfiguration($this->importConfiguration)
             ->import();
     }
 
@@ -53,7 +53,7 @@ class ImporterTest extends TestCase
         $importer = $this->importerFactory->getImporter('csv');
 
         $importer->fromString(file_get_contents(__DIR__ . '/Fixtures/fake.csv'))
-            ->useImportClass($this->importClass)
+            ->useImportConfiguration($this->importConfiguration)
             ->import();
     }
 
@@ -62,7 +62,7 @@ class ImporterTest extends TestCase
         $importer = $this->importerFactory->getImporter('xml');
 
         $importer->fromFile(__DIR__ . '/Fixtures/fake.xml')
-            ->useImportClass($this->importClass)
+            ->useImportConfiguration($this->importConfiguration)
             ->import();
     }
 
@@ -71,7 +71,7 @@ class ImporterTest extends TestCase
         $importer = $this->importerFactory->getImporter('xml');
 
         $importer->fromString(file_get_contents(__DIR__ . '/Fixtures/fake.xml'))
-            ->useImportClass($this->importClass)
+            ->useImportConfiguration($this->importConfiguration)
             ->import();
     }
 
@@ -80,7 +80,7 @@ class ImporterTest extends TestCase
         $importer = $this->importerFactory->getImporter('json');
 
         $importer->fromFile(__DIR__ . '/Fixtures/fake.json')
-            ->useImportClass($this->importClass)
+            ->useImportConfiguration($this->importConfiguration)
             ->import();
     }
 
@@ -89,7 +89,7 @@ class ImporterTest extends TestCase
         $importer = $this->importerFactory->getImporter('json');
 
         $importer->fromString(file_get_contents(__DIR__ . '/Fixtures/fake.json'))
-            ->useImportClass($this->importClass)
+            ->useImportConfiguration($this->importConfiguration)
             ->import();
     }
 
@@ -98,7 +98,7 @@ class ImporterTest extends TestCase
         $importer = $this->importerFactory->getImporter('json');
 
         $importer->fromFile(__DIR__ . '/Fixtures/fake_nested.json')
-            ->useImportClass(new ImportNestedJsonClass())
+            ->useImportConfiguration(new ImportNestedJsonConfiguration())
             ->import();
     }
 
@@ -107,7 +107,7 @@ class ImporterTest extends TestCase
         $importer = $this->importerFactory->getImporter('json');
 
         $importer->fromString(file_get_contents(__DIR__ . '/Fixtures/fake_nested.json'))
-            ->useImportClass(new ImportNestedJsonClass())
+            ->useImportConfiguration(new ImportNestedJsonConfiguration())
             ->import();
     }
 
@@ -116,7 +116,7 @@ class ImporterTest extends TestCase
         $importer = $this->importerFactory->getImporter('xlsx');
 
         $importer->fromFile(__DIR__ . '/Fixtures/fake.xlsx')
-            ->useImportClass($this->importClass)
+            ->useImportConfiguration($this->importConfiguration)
             ->import();
     }
 
@@ -125,7 +125,7 @@ class ImporterTest extends TestCase
         $importer = $this->importerFactory->getImporter('xlsx');
 
         $importer->fromFile(__DIR__ . '/Fixtures/fake.xlsx')
-            ->useImportClass($this->importClass)
+            ->useImportConfiguration($this->importConfiguration)
             ->withAdditionalData(['test' => 'testing'])
             ->import();
     }
@@ -138,7 +138,7 @@ class ImporterTest extends TestCase
         $importer = $this->importerFactory->getImporter('xlsx');
 
         $importer->fromString('nop')
-            ->useImportClass($this->importClass)
+            ->useImportConfiguration($this->importConfiguration)
             ->import();
     }
 
@@ -147,7 +147,7 @@ class ImporterTest extends TestCase
         $importer = $this->importerFactory->getImporter('csv');
 
         $importer->fromFile(__DIR__ . '/Fixtures/fake.csv')
-            ->useImportClass(new ChunkImportClass())
+            ->useImportConfiguration(new ChunkImportConfiguration())
             ->import();
     }
 
@@ -162,11 +162,23 @@ class ImporterTest extends TestCase
     /**
      * @expectedException \KunicMarko\Importer\Exception\InvalidArgumentException
      */
+    public function testNoImportConfiguration(): void
+    {
+        $importer = $this->importerFactory->getImporter('csv');
+
+        $importer->import();
+    }
+
+    /**
+     * @expectedException \KunicMarko\Importer\Exception\InvalidArgumentException
+     */
     public function testFileNotFound(): void
     {
         $importer = $this->importerFactory->getImporter('csv');
 
-        $importer->fromFile('fake');
+        $importer
+            ->useImportConfiguration(new ChunkImportConfiguration())
+            ->fromFile('fake');
     }
 
     /**
@@ -176,7 +188,9 @@ class ImporterTest extends TestCase
     {
         $importer = $this->importerFactory->getImporter('csv');
 
-        $importer->fromString('');
+        $importer
+            ->useImportConfiguration(new ChunkImportConfiguration())
+            ->fromString('');
     }
 
     /**
@@ -186,7 +200,9 @@ class ImporterTest extends TestCase
     {
         $importer = $this->importerFactory->getImporter('json');
 
-        $importer->import();
+        $importer
+            ->useImportConfiguration(new ChunkImportConfiguration())
+            ->import();
     }
 
     /**
@@ -196,7 +212,9 @@ class ImporterTest extends TestCase
     {
         $importer = $this->importerFactory->getImporter('xlsx');
 
-        $importer->import();
+        $importer
+            ->useImportConfiguration(new ChunkImportConfiguration())
+            ->import();
     }
 
     /**
@@ -206,7 +224,9 @@ class ImporterTest extends TestCase
     {
         $importer = $this->importerFactory->getImporter('csv');
 
-        $importer->import();
+        $importer
+            ->useImportConfiguration(new ChunkImportConfiguration())
+            ->import();
     }
 
     /**
@@ -216,6 +236,8 @@ class ImporterTest extends TestCase
     {
         $importer = $this->importerFactory->getImporter('xml');
 
-        $importer->import();
+        $importer
+            ->useImportConfiguration(new ChunkImportConfiguration())
+            ->import();
     }
 }

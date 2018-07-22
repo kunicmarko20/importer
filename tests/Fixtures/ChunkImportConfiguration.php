@@ -4,13 +4,15 @@ namespace KunicMarko\Importer\Tests\Fixtures;
 
 use Iterator;
 use KunicMarko\Importer\BeforeImport;
-use KunicMarko\Importer\Import;
+use KunicMarko\Importer\ChunkImport;
+use KunicMarko\Importer\ImportConfiguration;
 use PHPUnit\Framework\TestCase;
+use function count;
 
 /**
  * @author Marko Kunic <kunicmarko20@gmail.com>
  */
-class ImportClass extends TestCase implements Import, BeforeImport
+class ChunkImportConfiguration extends TestCase implements ImportConfiguration, ChunkImport, BeforeImport
 {
     public function before(Iterator $items, array $additionalData): Iterator
     {
@@ -19,20 +21,18 @@ class ImportClass extends TestCase implements Import, BeforeImport
         return $items;
     }
 
+    public function chunkSize(): int
+    {
+        return 50;
+    }
+
     public function map(array $item, array $additionalData)
     {
-        if ($additionalData) {
-            $this->assertSame('testing', reset($additionalData));
-        }
-
         return $item;
     }
 
     public function save(array $items, array $additionalData): void
     {
-        $this->assertCount(999, $items);
-
-        $first = reset($items);
-        $this->assertSame(2, (int) reset($first));
+        $this->assertLessThanOrEqual(50, count($items));
     }
 }
