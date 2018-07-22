@@ -2,6 +2,7 @@
 
 namespace KunicMarko\Importer;
 
+use KunicMarko\Importer\Exception\InvalidArgumentException;
 use KunicMarko\Importer\Reader\Reader;
 use Iterator;
 
@@ -16,9 +17,9 @@ final class Importer
     private $reader;
 
     /**
-     * @var Import
+     * @var ImportConfiguration
      */
-    private $importClass;
+    private $importConfiguration;
 
     /**
      * @var array
@@ -51,25 +52,29 @@ final class Importer
         return $this;
     }
 
-    public function useImportClass(Import $importClass): self
+    public function useImportConfiguration(ImportConfiguration $importConfiguration): self
     {
-        $this->importClass = $importClass;
+        $this->importConfiguration = $importConfiguration;
 
         return $this;
     }
 
     public function import(): void
     {
-        $items = $this->reader->getItems();
-
-        if ($this->importClass instanceof BeforeImport) {
-            $items = $this->importClass->before($items, $this->additionalData);
+        if (!$this->importConfiguration) {
+            throw new InvalidArgumentException('You must provide ImportConfiguration.');
         }
 
-        if ($this->importClass instanceof ChunkImport) {
+        $items = $this->reader->getItems();
+
+        if ($this->importConfiguration instanceof BeforeImport) {
+            $items = $this->importConfiguration->before($items, $this->additionalData);
+        }
+
+        if ($this->importConfiguration instanceof ChunkImport) {
             $this->importChunkItems(
                 $items,
-                $this->importClass->chunkSize()
+                $this->importConfiguration->chunkSize()
             );
             return;
         }
@@ -84,17 +89,17 @@ final class Importer
         $i = 0;
 
         for (; $items->valid(); $items->next()) {
-            $mappedItems[] = $this->importClass->map($items->current(), $this->additionalData);
+            $mappedItems[] = $this->importConfiguration->map($items->current(), $this->additionalData);
 
             if (++$i === $chunkSize) {
-                $this->importClass->save($mappedItems, $this->additionalData);
+                $this->importConfiguration->save($mappedItems, $this->additionalData);
                 $mappedItems = [];
                 $i = 0;
             }
         }
 
         if ($mappedItems) {
-            $this->importClass->save($mappedItems, $this->additionalData);
+            $this->importConfiguration->save($mappedItems, $this->additionalData);
         }
     }
 
@@ -103,9 +108,9 @@ final class Importer
         $mappedItems = [];
 
         for (; $items->valid(); $items->next()) {
-            $mappedItems[] = $this->importClass->map($items->current(), $this->additionalData);
+            $mappedItems[] = $this->importConfiguration->map($items->current(), $this->additionalData);
         }
 
-        $this->importClass->save($mappedItems, $this->additionalData);
+        $this->importConfiguration->save($mappedItems, $this->additionalData);
     }
 }

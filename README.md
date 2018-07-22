@@ -21,7 +21,7 @@ Documentation
     * [Lumen](#lumen)
     * [Without Framework](#without-framework)
 * [How to use](#how-to-use)
-    * [ImportClass](#importclass)
+    * [ImportConfiguration](#importconfiguration)
         * [BeforeImport](#beforeimport)
         * [ChunkImport](#chunkimport)
     * [Import](#import)
@@ -94,7 +94,7 @@ $importerFactory->addReader(new XlsxReader());
 
 $importer = $importerFactory->getImporter('csv');
 $importer->fromString('some,csv,string')
-    ->useImportClass(new YourImportClass())
+    ->useImportConfiguration(new YourImportConfiguration())
     ->import();
 ```
 
@@ -102,17 +102,15 @@ $importer->fromString('some,csv,string')
 
 ## How to use
 
-### ImportClass
+### ImportConfiguration
 
-Import class defines how should the data be mapped and saves the data. They have to implement
-`KunicMarko\Importer\Import` interface.
+ImportConfiguration defines how should the data be mapped and saves the data.
+They have to implement `KunicMarko\Importer\ImportConfiguration` interface.
 
 ```php
-namespace KunicMarko\Importer\Tests\Fixtures;
+use KunicMarko\Importer\ImportConfiguration;
 
-use KunicMarko\Importer\Import;
-
-class ImportClass implements Import
+class ImportUserConfiguration implements ImportConfiguration
 {
     public function map(array $item, array $additionalData)
     {
@@ -133,16 +131,14 @@ class ImportClass implements Import
 
 #### BeforeImport
 
-BeforeImport allows your ImportClass to do something with data before the mapping starts.
+BeforeImport allows your ImportConfiguration to do something with data before the mapping starts.
 
 ```php
-namespace KunicMarko\Importer\Tests\Fixtures;
-
-use KunicMarko\Importer\Import;
+use KunicMarko\Importer\ImportConfiguration;
 use KunicMarko\Importer\BeforeImport;
 use Iterator;
 
-class ImportClass implements Import, BeforeImport
+class ImportSomethingConfiguration implements ImportConfiguration, BeforeImport
 {
     public function before(Iterator $items, array $additionalData): Iterator
     {
@@ -156,16 +152,15 @@ class ImportClass implements Import, BeforeImport
 
 #### ChunkImport
 
-ChunkImport allows your class to define a number of items that the save method will receive,
-instead of receiving all at once.
+ChunkImport allows your configuration to define a number of items that the save method will
+receive, instead of receiving all at once.
 
 ```php
-namespace KunicMarko\Importer\Tests\Fixtures;
 
-use KunicMarko\Importer\Import;
+use KunicMarko\Importer\ImportConfiguration;
 use KunicMarko\Importer\ChunkImport;
 
-class ImportClass implements Import, ChunkImport
+class ImportChunkSomethingConfiguration implements ImportConfiguration, ChunkImport
 {
     public function chunkSize(): int
     {
@@ -181,8 +176,8 @@ class ImportClass implements Import, ChunkImport
 
 ### Import
 
-After you have defined your import class, you can import from a file or from a string. You HAVE to
-provide one of those 2 options and your import class.
+After you have defined your import configuration, you can import from a file or from a string.
+You HAVE to provide one of those 2 options and your import configuration.
 
 #### Import From File
 
@@ -203,7 +198,7 @@ class UserImport
         $importer = $importerFactory->getImporter('csv');
 
         $importer->fromFile('path/to/file.csv')
-            ->useImportClass(new YourImportClass())
+            ->useImportConfiguration(new YourImportConfiguration())
             ->import();
     }
 }
@@ -228,7 +223,7 @@ class UserImport
         $importer = $importerFactory->getImporter('csv');
 
         $importer->fromString('some,csv,string')
-            ->useImportClass(new YourImportClass())
+            ->useImportConfiguration(new YourImportConfiguration())
             ->import();
     }
 }
@@ -238,7 +233,7 @@ class UserImport
 
 ### Pass Additional Data
 
-Sometimes you may want to pass additional data to your import class.
+Sometimes you may want to pass additional data to your import configuration.
 
 ```php
 use KunicMarko\Importer\ImporterFactory;
@@ -257,7 +252,7 @@ class UserImport
         $importer = $importerFactory->getImporter('csv');
 
         $importer->fromString('some,csv,string')
-            ->useIamportClass(new YourImportClass())
+            ->useImportConfiguration(new YourImportConfiguration())
             ->withAdditionalData(['user' => 'kunicmarko20'])
             ->import();
     }
